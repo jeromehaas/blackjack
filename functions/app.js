@@ -62,6 +62,62 @@ let UI = (function() {
         SA:     {name: "Spade Ace", value: 11, img: "./media/cards/AS.png"}
     };
 
+    let domElements = {
+        dealButton:         $("#deal-button"),
+        hitButton:          $("#hit-button"),
+        standButton:        $("#stand-button"),
+        bankRoll:           $("#element-bankroll"),
+        totalBankRoll:      $("#element-total-bankroll"),
+        playerCardDeck:     $("#element-player-card-deck"),
+        botCardDeck:        $("#element-bot-card-deck"),
+        playerTotalPoints:  $("#element-player-total-points"),
+        botTotalPoints:     $("#element-bot-total-points"),
+        coin_10:            $("#coin-10"),
+        coin_20:            $("#coin-20"),
+        coin_50:            $("#coin-50"),
+        coin_100:           $("#coin-100"),
+        coin_500:           $("#coin-500"),
+        message:            $("#element-message"),
+        messageText:        $("#message-text"),
+        pot:                $("#element-pot"),
+        coins:              $(".coin")
+    };
+
+
+    function getDomElements() {
+        return domElements;
+    }
+
+    /* -------------------------------------------- */
+    /* SOUNDS
+    /* -------------------------------------------- */
+
+    function sounds() {
+        return {
+            addCoin: function() {
+                let sound = new Audio("./media/sounds/add_chip.mp3");
+                sound.play();
+            },
+            buttonClick: function() {
+                let sound = new Audio("./media/sounds/button_click.mp3");
+                sound.play();
+            },
+            winRound: function() {
+                let sound = new Audio("./media/sounds/win_round.mp3");
+                sound.play();
+            },
+            loseRound: function() {
+                let sound = new Audio("./media/sounds/lose_round.mp3");
+                sound.play();
+            }
+        }
+    }
+
+
+    /* -------------------------------------------- */
+    /* GENERAL UI FUNCTIONS
+    /* -------------------------------------------- */
+
     let buttonActions = {
         showDealButton:     function() { domElements.dealButton.addClass("visible"); },
         showHitButton:      function() { domElements.hitButton.addClass("visible"); },
@@ -71,31 +127,6 @@ let UI = (function() {
         hideStandButton:    function() { domElements.standButton.removeClass("visible"); },
     };
 
-    let domElements = {
-        dealButton:         $("#deal-button"),
-        hitButton:          $("#hit-button"),
-        standButton:        $("#stand-button"),
-        bankRoll:           $("#element-bankroll"),
-        totalBankRoll:      $("#element-total-bankroll"),
-        playerCardDeck:     $("#element-player-card-deck"),
-        botCardDeck:        $("#element-bot-card-deck"),
-        playerCards:        $(".player-card"),
-        playerTotalPoints:  $("#element-player-total-points"),
-        botTotalPoints:     $("#element-bot-total-points"),
-        coins:              $(".coin"),
-        coin_10:            $("#coin-10"),
-        coin_20:            $("#coin-20"),
-        coin_50:            $("#coin-50"),
-        coin_100:           $("#coin-100"),
-        coin_500:           $("#coin-500"),
-        message:            $("#element-message"),
-        messageText:        $("#message-text"),
-        pot:                $("#element-pot")
-    };
-
-    function getDomElements() {
-        return domElements;
-    }
 
     function getRandomCard() {
         let cardSuit, randomCardSuit, cardRank, randomCardRank, randomCardValue;
@@ -105,6 +136,40 @@ let UI = (function() {
         randomCardRank = cardRank[Math.floor(Math.random() * cardRank.length)];
         randomCardValue = randomCardSuit + randomCardRank;
         return gameCards[randomCardValue];
+    }
+
+    function getCard(competitor) {
+        let randomCard, randomCardValue;
+        randomCard = UI.getRandomCard();
+        randomCardValue = randomCard.value;
+        if (competitor === "player") {
+            calculator.playerAddPoints(randomCardValue);
+            calculator.values.player.totalPoints = calculator.playerGetTotalPoints();
+            if (randomCard.value === 11) {
+                calculator.values.player.amountOfAces++;
+            }
+            if (calculator.values.player.totalPoints > 21 && calculator.values.player.amountOfAces > 0) {
+                calculator.values.player.totalPoints -= 10;
+                calculator.values.player.amountOfAces--;
+            }
+            calculator.values.player.cards.push(randomCard);
+            UI.playerShowTotalPoints(calculator.values.player.totalPoints);
+            UI.playerDrawCard(randomCard);
+        } else if (competitor === "bot") {
+            calculator.botAddPoints(randomCardValue);
+            calculator.values.bot.totalPoints = calculator.botGetTotalPoints();
+            if (randomCard.value === 11) {
+                calculator.values.bot.amountOfAces++;
+            }
+            if (calculator.values.bot.totalPoints > 21 && calculator.values.player.amountOfAces > 0) {
+                calculator.values.bot.totalPoints -= 10;
+                calculator.values.bot.amountOfAces--;
+            }
+            calculator.values.bot.cards.push(randomCard);
+            UI.botShowTotalPoints(calculator.values.bot.totalPoints);
+            UI.botDrawCard(randomCard);
+
+        }
     }
 
     let elementActions = {
@@ -139,6 +204,29 @@ let UI = (function() {
         setTimeout(function() {
             domElements.message.removeClass("visible");
         }, 3000)
+    }
+
+    function resetGame() {
+        setTimeout(function() {
+            calculator.playerResetTotalPoints();
+            calculator.botResetTotalPoints();
+            calculator.playerResetCards();
+            calculator.botResetCards();
+            playerHideTotalPoints();
+            botHideTotalPoints();
+            buttonActions.hideHitButton();
+            buttonActions.hideStandButton();
+            cardActions.hideCardDecks();
+            elementActions.showBankRoll();
+            domElements.playerCardDeck.empty();
+            domElements.botCardDeck.empty();
+            calculator.resetTotalBet();
+            calculator.values.player.totalBet = 0;
+            calculator.values.player.totalPoints = 0;
+            calculator.values.bot.totalPoints = 0;
+            domElements.pot.text(calculator.values.player.totalBet);
+            checkCoinsAvailability(calculator.values.player.totalBankRoll);
+        }, 2000);
     }
 
     /* -------------------------------------------- */
@@ -207,7 +295,10 @@ let UI = (function() {
         botShowTotalPoints:     botShowTotalPoints,
         botHideTotalPoints:     botHideTotalPoints,
         getHiddenCard:          getHiddenCard,
-        hideHiddenCard:         hideHiddenCard
+        hideHiddenCard:         hideHiddenCard,
+        resetGame:              resetGame,
+        getCard:                getCard,
+        sounds:                 sounds
     }
 
 })();
@@ -222,16 +313,26 @@ let calculator = (function() {
         player: {
             coinValue: 0,
             totalBet: 0,
-            creditWorthy: true,
-            // validTotalBet: 0,
             totalBankRoll: 0,
             totalPoints: 0,
+            cards: [],
+            amountOfAces: 0
         },
         bot: {
-            totalPoints: 0
+            totalPoints: 0,
+            cards: [],
+            amountOfAces: 0
         }
     };
 
+    let sounds = UI.sounds();
+
+    function checkIfBusted(totalPoints) {
+        if (totalPoints > 21) {
+            UI.showMessage("BUSTED");
+            UI.resetGame();
+        }
+    }
 
     /* -------------------------------------------- */
     /* POINTS
@@ -247,6 +348,14 @@ let calculator = (function() {
 
     function playerResetTotalPoints() {
         values.player.totalPoints = 0;
+    }
+
+    function playerResetCards() {
+        values.player.cards = [];
+    }
+
+    function botResetCards() {
+        values.bot.cards = [];
     }
 
 
@@ -324,13 +433,15 @@ let calculator = (function() {
         getTotalBankRoll:       getTotalBankRoll,
         updateTotalBet:         updateTotalBet,
         resetTotalBet:          resetTotalBet,
-        checkCredibility:       checkCredibility,
         playerAddPoints:        playerAddPoints,
         playerGetTotalPoints:   playerGetTotalPoints,
         playerResetTotalPoints: playerResetTotalPoints,
         botAddPoints:           botAddPoints,
         botGetTotalPoints:      botGetTotalPoints,
-        botResetTotalPoints:    botResetTotalPoints
+        botResetTotalPoints:    botResetTotalPoints,
+        checkIfBusted:          checkIfBusted,
+        playerResetCards:       playerResetCards,
+        botResetCards:          botResetCards
 
 
     }
@@ -344,18 +455,20 @@ let calculator = (function() {
 let appController = (function() {
 
     let domElements = UI.getDomElements();
+    let sounds = UI.sounds();
 
     /* INITIALIZE GAME */
     function startGame() {
         calculator.setTotalBankRoll(5000);
         UI.elementActions.showBankRoll();
-        UI.buttonActions.showDealButton();
+        // UI.buttonActions.showDealButton();
         domElements.totalBankRoll.text(calculator.getTotalBankRoll());
-
     }
 
     /* ADD COIN */
     domElements.coins.on("click", function() {
+        sounds.addCoin();
+        UI.buttonActions.showDealButton();
         calculator.values.player.coinValue = parseInt($(this).attr("value"));
         calculator.values.player.totalBet = calculator.updateTotalBet(calculator.values.player.coinValue);
         calculator.values.player.totalBankRoll = calculator.updateTotalBankRoll(calculator.values.player.coinValue, "subtract");
@@ -367,31 +480,34 @@ let appController = (function() {
     /* DEAL */
     domElements.dealButton.on("click", function() {
         if (calculator.values.player.totalBet > 0) {
+            sounds.buttonClick();
             UI.elementActions.hideBankRoll();
             UI.buttonActions.hideDealButton();
             UI.cardActions.showCardDecks();
             UI.buttonActions.showHitButton();
             UI.buttonActions.showStandButton();
-            getCard("player");
-            getCard("player");
-            getCard("bot");
+            UI.getCard("player");
+            UI.getCard("player");
+            UI.getCard("bot");
             UI.getHiddenCard();
         }
     });
 
     /* HIT */
     UI.domElements.hitButton.on("click", function() {
-        getCard("player");
-        checkIfBusted(calculator.values.player.totalPoints);
+        sounds.buttonClick();
+        UI.getCard("player");
+        calculator.checkIfBusted(calculator.values.player.totalPoints);
     });
 
     /* STAND */
     UI.domElements.standButton.on("click", function() {
+        sounds.buttonClick();
         UI.buttonActions.hideHitButton();
         UI.buttonActions.hideStandButton();
         UI.hideHiddenCard();
         while (calculator.values.bot.totalPoints < 17) {
-            getCard("bot");
+            UI.getCard("bot");
         }
         if (calculator.values.player.totalPoints > calculator.values.bot.totalPoints || calculator.values.bot.totalPoints > 21) {
             UI.showMessage("YOU WIN");
@@ -404,56 +520,8 @@ let appController = (function() {
             calculator.updateTotalBankRoll(calculator.values.player.totalBet, "add");
             domElements.totalBankRoll.text(calculator.values.player.totalBankRoll);
         }
-        resetGame();
+        UI.resetGame();
     });
-
-    function checkIfBusted(totalPoints) {
-        if (totalPoints > 21) {
-            UI.showMessage("BUSTED");
-            resetGame();
-        }
-    }
-
-    function getCard(competitor) {
-        let randomCard, randomCardValue;
-        randomCard = UI.getRandomCard();
-        randomCardValue = randomCard.value;
-        if (competitor == "player") {
-            calculator.playerAddPoints(randomCardValue);
-            calculator.values.player.totalPoints = calculator.playerGetTotalPoints();
-            UI.playerShowTotalPoints(calculator.values.player.totalPoints);
-            UI.playerDrawCard(randomCard);
-        } else if (competitor == "bot") {
-            calculator.botAddPoints(randomCardValue);
-            calculator.values.bot.totalPoints = calculator.botGetTotalPoints();
-            UI.botShowTotalPoints(calculator.values.bot.totalPoints);
-            UI.botDrawCard(randomCard);
-        }
-    }
-
-    function resetGame() {
-        setTimeout(function() {
-            calculator.playerResetTotalPoints();
-            calculator.botResetTotalPoints();
-            UI.playerHideTotalPoints();
-            UI.botHideTotalPoints();
-            UI.buttonActions.hideHitButton();
-            UI.buttonActions.hideStandButton();
-            UI.cardActions.hideCardDecks();
-            UI.elementActions.showBankRoll();
-            UI.buttonActions.showDealButton();
-            UI.domElements.playerCardDeck.empty();
-            UI.domElements.botCardDeck.empty();
-            calculator.resetTotalBet();
-            calculator.values.player.totalBet = 0;
-            calculator.values.player.totalPoints = 0;
-            calculator.values.bot.totalPoints = 0;
-            UI.domElements.pot.text(calculator.values.player.totalBet);
-            UI.checkCoinsAvailability(calculator.values.player.totalBankRoll);
-
-        }, 2000);
-
-    }
 
     return {
         startGame: startGame,
@@ -461,6 +529,6 @@ let appController = (function() {
 
 })();
 
-//appController.startGame();
+appController.startGame();
 
 
