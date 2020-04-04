@@ -77,8 +77,9 @@ let UI = (function() {
         coin_50:            $("#coin-50"),
         coin_100:           $("#coin-100"),
         coin_500:           $("#coin-500"),
-        message:            $("#element-message"),
-        messageText:        $("#message-text"),
+        message:            $("#message"),
+        menu:               $("#menu"),
+        startButton:        $("#start-game-button"),
         pot:                $("#element-pot"),
         coins:              $(".coin")
     };
@@ -127,6 +128,13 @@ let UI = (function() {
         hideStandButton:    function() { domElements.standButton.removeClass("visible"); },
     };
 
+    function startGame() {
+        calculator.setTotalBankRoll(5000);
+        elementActions.showBankRoll();
+        elementActions.showPot();
+        domElements.totalBankRoll.text(calculator.getTotalBankRoll());
+        domElements.menu.addClass("hidden");
+    }
 
     function getRandomCard() {
         let cardSuit, randomCardSuit, cardRank, randomCardRank, randomCardValue;
@@ -174,7 +182,8 @@ let UI = (function() {
 
     let elementActions = {
         hideBankRoll: function() { domElements.bankRoll.removeClass("visible"); },
-        showBankRoll: function() { domElements.bankRoll.addClass("visible"); }
+        showBankRoll: function() { domElements.bankRoll.addClass("visible"); },
+        showPot: function() { domElements.pot.addClass("visible") }
     };
 
     let cardActions = {
@@ -199,11 +208,11 @@ let UI = (function() {
     function showMessage(message) {
         setTimeout(function() {
             domElements.message.addClass("visible");
-            domElements.messageText.text(message);
+            domElements.message.text(message);
         }, 1000);
         setTimeout(function() {
             domElements.message.removeClass("visible");
-        }, 3000)
+        }, 4000)
     }
 
     function resetGame() {
@@ -223,6 +232,8 @@ let UI = (function() {
             calculator.resetTotalBet();
             calculator.values.player.totalBet = 0;
             calculator.values.player.totalPoints = 0;
+            calculator.values.player.amountOfAces = 0;
+            calculator.values.bot.amountOfAces = 0;
             calculator.values.bot.totalPoints = 0;
             domElements.pot.text(calculator.values.player.totalBet);
             checkCoinsAvailability(calculator.values.player.totalBankRoll);
@@ -298,7 +309,8 @@ let UI = (function() {
         hideHiddenCard:         hideHiddenCard,
         resetGame:              resetGame,
         getCard:                getCard,
-        sounds:                 sounds
+        sounds:                 sounds,
+        startGame:              startGame
     }
 
 })();
@@ -458,12 +470,9 @@ let appController = (function() {
     let sounds = UI.sounds();
 
     /* INITIALIZE GAME */
-    function startGame() {
-        calculator.setTotalBankRoll(5000);
-        UI.elementActions.showBankRoll();
-        // UI.buttonActions.showDealButton();
-        domElements.totalBankRoll.text(calculator.getTotalBankRoll());
-    }
+    domElements.startButton.on("click", function() {
+        UI.startGame();
+    });
 
     /* ADD COIN */
     domElements.coins.on("click", function() {
@@ -490,6 +499,12 @@ let appController = (function() {
             UI.getCard("player");
             UI.getCard("bot");
             UI.getHiddenCard();
+            if (calculator.values.player.cards.length === 2 && calculator.values.player.totalPoints === 21) {
+                UI.showMessage("BLACK JACK");
+                calculator.updateTotalBankRoll(calculator.values.player.totalBet * 3, "add");
+                domElements.totalBankRoll.text(calculator.values.player.totalBankRoll);
+                UI.resetGame();
+            }
         }
     });
 
@@ -509,7 +524,8 @@ let appController = (function() {
         while (calculator.values.bot.totalPoints < 17) {
             UI.getCard("bot");
         }
-        if (calculator.values.player.totalPoints > calculator.values.bot.totalPoints || calculator.values.bot.totalPoints > 21) {
+
+   if (calculator.values.player.totalPoints > calculator.values.bot.totalPoints || calculator.values.bot.totalPoints > 21) {
             UI.showMessage("YOU WIN");
             calculator.updateTotalBankRoll(calculator.values.player.totalBet * 2, "add");
             domElements.totalBankRoll.text(calculator.values.player.totalBankRoll);
@@ -523,12 +539,10 @@ let appController = (function() {
         UI.resetGame();
     });
 
-    return {
-        startGame: startGame,
-    }
+
 
 })();
 
-appController.startGame();
+ // appController.startGame();
 
 

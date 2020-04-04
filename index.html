@@ -7,6 +7,8 @@
     <title>Black Jack Game</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
 </head>
 <body>
     <div class="container-game">
@@ -23,20 +25,25 @@
 
         <div id="element-bot-card-deck"> </div>
 
-        <div id="element-player-total-points">99</div>
-        <div id="element-bot-total-points">88</div>
+        <div id="element-player-total-points"></div>
+        <div id="element-bot-total-points"></div>
 
         <div id="element-total-bankroll"></div>
 
-        <div id="element-pot"></div>
+        <div id="element-pot">0</div>
 
         <div id="deal-button">DEAL</div>
         <div id="hit-button">HIT</div>
         <div id="stand-button">STAND</div>
 
-        <div id="element-message">
-            <div id="message-text">YOU WIN</div>
+
+        <div id="message">YOU WIN</div>
+
+        <div id="menu">
+            <p>Welcome to the Game!</p>
+            <button id="start-game-button">PLAY</button>
         </div>
+
 
         <div id="sounds">
             <audio id="sound-add-chip" src="./media/sounds/add_chip.mp3"></audio>

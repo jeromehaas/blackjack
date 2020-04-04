@@ -2,7 +2,8 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "Helvetica Neue";
+    font-family: 'Bai Jamjuree', sans-serif;
+    outline: none;
 }
 
 
@@ -12,6 +13,8 @@
     position: relative;
     background-color: white;
     overflow: hidden;
+    background-image: url("../media/images/green_felt.jpg");
+    background-size: cover;
 }
 
 /* ------------------------------------------------------------*/
@@ -40,6 +43,8 @@
     height: 80px;
     margin: 10px;
     background-size: cover;
+    background-color: white;
+    border-radius: 50%;
 }
 
 #element-bankroll #coin-10 {
@@ -78,6 +83,9 @@
     padding: 20px 0 20px 0;
     color: white;
     text-align: center;
+    border-radius: 0 10px 3px 0;
+    border-top: 2px solid white;
+    border-right: 2px solid white;
 }
 
 /* ------------------------------------------------------------*/
@@ -86,15 +94,21 @@
 
 #element-pot {
     position: absolute;
-    top: 50%;
+    top: -120px;
     left: 50%;
     transform: translate(-50%, -50%);
     background-image: url("../media/coins/coin-pot.png");
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     background-size: cover;
     text-align: center;
-    padding: 31px 0px;
+    padding: 50px 0px;
+    border-radius: 50%;
+    transition: 0.5s ease;
+}
+
+#element-pot.visible {
+    top: 50%;
 }
 
 /* ------------------------------------------------------------*/
@@ -108,25 +122,37 @@
     top: 50%;
     transform: translateY(-50%);
 
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
 
     width: 200px;
     padding: 20px 0 20px 0;
-    background-color: red;
+    background-color: #D01F00;
     text-align: center;
 
 }
 
 #deal-button {
     right: -200px;
+    border-radius: 10px 0 0 10px;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
 }
 
 #hit-button {
     right: -200px;
+    border-radius: 10px 0 0 10px;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
 }
 
 #stand-button {
     left: -200px;
+    border-radius: 0 10px 10px 0;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
 }
 
 #deal-button.visible {
@@ -158,6 +184,7 @@
 .player-card img {
     height: 150px;
     width: auto;
+    margin: 10px;
 }
 
 #element-player-card-deck.visible {
@@ -172,9 +199,9 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 170px;
-    font-size: 20px;
+    bottom: 250px;
     display: none;
+    font-size: 45px;
 }
 
 #element-player-total-points.visible {
@@ -189,9 +216,10 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 170px;
-    font-size: 20px;
+    top: 250px;
+    font-size: 45px;
     display: none;
+    font-size: 45px;
 }
 
 #element-bot-total-points.visible {
@@ -215,6 +243,7 @@
 .bot-card img {
     height: 150px;
     width: auto;
+    margin: 10px;
 }
 
 #element-bot-card-deck.visible {
@@ -225,34 +254,67 @@
 /* MESSAGE */
 /* ------------------------------------------------------------*/
 
-#element-message {
-    position: absolute;
-    top: 0px;
-    right: unset;
-    bottom: unset;
-    left: 0px;
-    overflow: hidden;
-    background-color: rgba(255, 255, 255, 0);
-    backdrop-filter: unset;
-    z-index: 10;
-    display: block;
-}
 
-#message-text {
+#message {
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    right: -450px;
+    transform: translate(50%, -50%);
     width: 300px;
     padding: 50px;
-    background-color: white;
+    background-color: #ffffff;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.25);
     text-align: center;
 }
 
-#element-message.visible {
-    bottom: 0px;
-    right: 0px;
-    background-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(20px);
+#message.visible {
+    animation: slideIn 3s ease
+}
+
+@keyframes slideIn {
+    0% { right: -450px; }
+    50% { right: 50% }
+    100% { right: calc(100vw + 300px);}
+}
+
+
+/* ------------------------------------------------------------*/
+/* MENU */
+/* ------------------------------------------------------------*/
+
+
+#menu {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 600px;
+    padding: 100px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+#menu #start-game-button {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 6.5px;
+    margin-top: 20px;
+    font-size: 25px;
+    transition: 0.3s;
+}
+
+#menu #start-game-button:hover {
+    transform: scale(1.05);
+}
+
+#menu.hidden {
+    animation: slideDown 0.6s ease;
+    top: calc(100vh + 300px);
+}
+
+@keyframes slideDown {
+    0% { top: 50%  }
+    100% { top: calc(100vh + 300px);}
 }
