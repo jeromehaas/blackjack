@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Black Jack Game</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style/main.css">
+</head>
+<body>
+    <div class="container-game">
+
+        <div id="element-bankroll">
+            <figure class="coin" id="coin-10" value="10"></figure>
+            <figure class="coin" id="coin-20" value="20"></figure>
+            <figure class="coin" id="coin-50" value="50"></figure>
+            <figure class="coin" id="coin-100" value="100"></figure>
+            <figure class="coin" id="coin-500" value="500"></figure>
+        </div>
+
+        <div id="element-player-card-deck"></div>
+
+        <div id="element-bot-card-deck"> </div>
+
+        <div id="element-player-total-points">99</div>
+        <div id="element-bot-total-points">88</div>
+
+        <div id="element-total-bankroll"></div>
+
+        <div id="element-pot"></div>
+
+        <div id="deal-button">DEAL</div>
+        <div id="hit-button">HIT</div>
+        <div id="stand-button">STAND</div>
+
+        <div id="element-message">
+            <div id="message-text">YOU WIN</div>
+        </div>
+
+    </div>
+    <script src="functions/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue";
+}
+
+
+.container-game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background-color: white;
+    overflow: hidden;
+}
+
+/* ------------------------------------------------------------*/
+/* BANKROLL */
+/* ------------------------------------------------------------*/
+
+#element-bankroll {
+    width: auto;
+    height: 100px;
+
+    position: absolute;
+
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    transition: all 0.3s ease;
+    /*display: none; /* TEMPORARY HIDDEN */
+}
+
+#element-bankroll .coin {
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    background-size: cover;
+}
+
+#element-bankroll #coin-10 {
+    background-image: url("../media/coins/coin-10.png");
+}
+
+#element-bankroll #coin-20 {
+    background-image: url("../media/coins/coin-20.png");
+}
+
+#element-bankroll #coin-50 {
+    background-image: url("../media/coins/coin-50.png");
+}
+
+#element-bankroll #coin-100 {
+    background-image: url("../media/coins/coin-100.png");
+}
+
+#element-bankroll #coin-500 {
+    background-image: url("../media/coins/coin-500.png");
+}
+
+#element-bankroll.visible {
+    bottom: 0px;
+}
+/* ------------------------------------------------------------*/
+/* TOTAL BANKROLL */
+/* ------------------------------------------------------------*/
+
+#element-total-bankroll {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    background-color: black;
+    width: 200px;
+    padding: 20px 0 20px 0;
+    color: white;
+    text-align: center;
+}
+
+/* ------------------------------------------------------------*/
+/* POT */
+/* ------------------------------------------------------------*/
+
+#element-pot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("../media/coins/coin-pot.png");
+    width: 80px;
+    height: 80px;
+    background-size: cover;
+    text-align: center;
+    padding: 31px 0px;
+}
+
+/* ------------------------------------------------------------*/
+/* BUTTONS */
+/* ------------------------------------------------------------*/
+
+#deal-button,
+#hit-button,
+#stand-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    transition: all 0.3s ease;
+
+    width: 200px;
+    padding: 20px 0 20px 0;
+    background-color: red;
+    text-align: center;
+
+}
+
+#deal-button {
+    right: -200px;
+}
+
+#hit-button {
+    right: -200px;
+}
+
+#stand-button {
+    left: -200px;
+}
+
+#deal-button.visible {
+    right: 0px;
+}
+
+#hit-button.visible {
+    right: 0px;
+}
+
+#stand-button.visible {
+    left: 0px;
+}
+
+/* ------------------------------------------------------------*/
+/* PLAYER CARD DECK */
+/* ------------------------------------------------------------*/
+
+#element-player-card-deck {
+    position: absolute;
+    bottom: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    transition: all 0.3s ease;
+}
+
+.player-card img {
+    height: 150px;
+    width: auto;
+}
+
+#element-player-card-deck.visible {
+    bottom: 0px;
+}
+
+/* ------------------------------------------------------------*/
+/* PLAYER TOTAL POINTS */
+/* ------------------------------------------------------------*/
+
+#element-player-total-points {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 170px;
+    font-size: 20px;
+    display: none;
+}
+
+#element-player-total-points.visible {
+    display: block;
+}
+
+/* ------------------------------------------------------------*/
+/* BOT TOTAL POINTS */
+/* ------------------------------------------------------------*/
+
+#element-bot-total-points {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 170px;
+    font-size: 20px;
+    display: none;
+}
+
+#element-bot-total-points.visible {
+    display: block;
+}
+
+/* ------------------------------------------------------------*/
+/* BOT CARD DECK */
+/* ------------------------------------------------------------*/
+
+#element-bot-card-deck {
+    position: absolute;
+    top: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    transition: all 0.3s ease;
+}
+
+.bot-card img {
+    height: 150px;
+    width: auto;
+}
+
+#element-bot-card-deck.visible {
+    top: 0px;
+}
+
+/* ------------------------------------------------------------*/
+/* MESSAGE */
+/* ------------------------------------------------------------*/
+
+#element-message {
+    position: absolute;
+    top: 0px;
+    right: unset;
+    bottom: unset;
+    left: 0px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: unset;
+    z-index: 10;
+    display: block;
+}
+
+#message-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 50px;
+    background-color: white;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+#element-message.visible {
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+}
