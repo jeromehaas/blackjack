@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Jérôme Janik Haas">
     <title>Black Jack Game</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style/main.css">
@@ -37,18 +38,14 @@
         <div id="stand-button">STAND</div>
 
 
-        <div id="message">YOU WIN</div>
+        <div id="message"></div>
 
         <div id="menu">
-            <p>Welcome to the Game!</p>
-            <button id="start-game-button">PLAY</button>
+            YOU ARE OUT OF CHIPS.. <br> <br>
+            DO YOU WANT TO PLAY ANOTHER ROUND? <br> <br>
+            <button id="play-again">PLAY AGAIN</button>
         </div>
 
-
-        <div id="sounds">
-            <audio id="sound-add-chip" src="./media/sounds/add_chip.mp3"></audio>
-
-        </div>
 
     </div>
     <script src="functions/app.js"></script>
